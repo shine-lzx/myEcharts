@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // title： 标题， 显示这个地图所表示的名称　 
+        title: {
+                text: '清大云点亮中国',
+                subtext: 'Tsingda.Cloud',
+                sublink: 'http://www.eee114.com',
+                x: 'center',
+                y: 'top',
+                textStyle: {
+                    color: '#fff'
+                }
+            },
+            // toolbox 工具栏， 显示一些显示的工具， 放大， 缩小， 查看数据集， 下载图像等　　　　 
+            toolbox: {
+                show: true,
+                feature: {
+                    mark: {
+                        show: true
+                    },
+                    dataView: {
+                        show: true,
+                        readOnly: false
+                    },
+                    restore: {
+                        show: true
+                    },
+                    saveAsImage: {
+                        show: true
+                    }
+                }
+            }
+            // legend： 图标显示， 当series有多个地图时， 这个值用到显示多个地图的图标， 可以是e5a48de588b6e79fa5e9819331333363373137横向显示和纵向显示　　　　 
+        legend: {
+                x: 'left',
+                y: 'top',
+                data: ['在线', '离线'], //在线和离线对应的是series的名字
+                selectedMode: false, //选中悬浮
+                textStyle: {
+                    color: '#fff'
+                }
+            }
+            // series： 地图显示， 用来叠放显示地图， 你可以定义多个， 它们之间的关系是第一个在最上面， 以此类推．
+        series: [
+                //默认
+                {
+                    name: '底层模版',
+                    type: 'map',
+                    mapType: 'china',
+                    data: provinceMap,
+                    geoCoord: source,
+                    itemStyle: {
+                        normal: {
+                            color: bgColor,
+                            borderColor: "#eee",
+                            label: {
+                                show: true,
+                                textStyle: {
+                                    color: "#fff"
+                                }
+                            }
+                        },
+                        emphasis: {
+                            color: "rgba(128, 128, 128, 0.5)"
+                        }
+                    },
+                }
+            ]
+            // markPoint： 点标识， 用来标识地图上的后， 这些点通常是被存储在一个geoCoord对象上， 这个对象是一个字典， 这在文章开头已经介绍过．
+        markPoint: { //动态标记
+                large: true, //这个选项，悬浮自动失效
+                symbolSize: 2,
+                itemStyle: {
+                    normal: {
+                        shadowBlur: 2,
+                        shadowColor: 'rgba(37, 140, 249, 0.8)',
+                        color: onColor
+                    }
+                },
+                data: []
+            }
+            // markPoint里的data对象是这个地图上需要显示的点， 它是一个字符型数组， 用来存储geoCoord里的键！
+        setOption: 将地图对象添加到指定的地图对象上
+        var myChart = echarts.init(document.getElementById('main'));
+        var option = {};
+        myChart.setOption(option);
+        // 动态构建地图上的点标识markPoint
+        // 大概的思路是将要标记的点动态付给geoCoord和markPoint的data对象上， 这样就可以动态在地图上标示点了　　　　
+        $.get("/map/GetOffMap", function(data) {
+                    for (var i in data) {
+                        option.series[0].geoCoord[data[i].longitude + "_" + data[i].latitude] = [parseFloat(data[i].longitude), parseFloat(data[i].latitude)];
+                        option.series[1].markPoint.data.push({
+                            name: data[i].longitude + "_" + data[i].latitude
+                        });
+                    }
+                    myChart.setOption(option);
+    </script>
+</body>
+
+</html>

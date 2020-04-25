@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var geoCoordMap = {   //地理坐标
+
+            "舟山": [122.207216, 29.985295],
+              
+
+            "齐齐哈尔": [123.97, 47.33],
+
+            "盐城": [120.13, 33.38],
+
+            "拉萨": [91.11, 29.97],
+
+            "南宁": [108.33, 22.84],
+
+            "苏州": [120.62, 31.32],
+
+            "南昌": [115.89, 28.68],
+
+            "南京": [118.78, 32.04],
+
+            "杭州": [120.19, 30.26],
+
+            "哈尔滨": [126.63, 45.75],
+
+            "合肥": [117.27, 31.86],
+
+            "武汉": [114.31, 30.52],
+
+            "大庆": [125.03, 46.58]
+
+        };
+
+        var data = [   //根据value值大小决定是中心还是站点
+
+            {
+                name: "舟山",
+                value: 12
+            },
+
+            {
+                name: "齐齐哈尔",
+                value: 14
+            },
+
+            {
+                name: "盐城",
+                value: 15
+            },
+
+            {
+                name: "拉萨",
+                value: 24
+            },
+
+            {
+                name: "南宁",
+                value: 37
+            },
+
+            {
+                name: "苏州",
+                value: 50
+            },
+
+            {
+                name: "南昌",
+                value: 54
+            },
+
+            {
+                name: "南京",
+                value: 67
+            },
+
+            {
+                name: "杭州",
+                value: 144
+            },
+
+            {
+                name: "哈尔滨",
+                value: 114
+            },
+
+            {
+                name: "合肥",
+                value: 129
+            },
+
+            {
+                name: "武汉",
+                value: 173
+            },
+
+            {
+                name: "大庆",
+                value: 179
+            }
+
+        ];
+
+        var convertData = function(data) {
+
+            var res = [];
+
+            for (var i = 0; i < data.length; i++) {
+
+                var geoCoord = geoCoordMap[data[i].name];   //得到对应坐标
+
+                if (geoCoord) {  //判断data第i个的name对应的地理坐标是否存在
+
+                    res.push({
+
+                        name: data[i].name,
+
+                        value: geoCoord.concat(data[i].value)  //两个value值连接
+
+                    });
+
+                }
+
+            }
+
+            return res;
+
+        };
+
+        var convertedData = [
+
+            convertData(data),
+
+            convertData(data.sort(function(a, b) {
+
+                return b.value - a.value;
+
+            }).slice(0, 6))
+
+        ];
+
+        option = {  //设置自定义地图
+
+            backgroundColor: 'rgba(64,74,89,0.1)',
+              //地图背景色
+
+            animation: true,
+
+            animationDuration: 1000,
+
+            animationEasing: 'cubicInOut',
+
+            animationDurationUpdate: 1000,
+
+            animationEasingUpdate: 'cubicInOut',
+
+            // title: [
+
+            //    {
+
+            //        text: '全国主要城市 PM 2.5',
+
+            //        subtext: 'data from PM25.in',
+
+            //        sublink: 'http://www.pm25.in',
+
+            //        left: 'center',
+
+            //        textStyle: {
+
+            //            color: '#fff'
+
+            //        }
+
+            //    },
+
+            //    {
+
+            //        id: 'statistic',
+
+            //        right: 120,
+
+            //        top: 40,
+
+            //        width: 100,
+
+            //        textStyle: {
+
+            //            color: '#fff',
+
+            //            fontSize: 16
+
+            //        }
+
+            //    }
+
+            // ],
+
+            // toolbox: {
+
+            //    iconStyle: {
+
+            //        normal: {
+
+            //            borderColor: '#fff'
+
+            //        },
+
+            //        emphasis: {
+
+            //            borderColor: '#b1e4ff'  //浅蓝
+
+            //        }
+
+            //    }
+
+            // },
+
+            // brush: {    //区域选择组件,选中的区域进行统计排序
+
+            //    outOfBrush: {
+
+            //        color: '#abc'
+
+            //    },
+
+            //    brushStyle: {
+
+            //        borderWidth: 2,
+
+            //        color: 'rgba(0,0,0,0.2)',
+
+            //        borderColor: 'rgba(0,0,0,0.5)',
+
+            //    },
+
+            //    seriesIndex: [0, 1],
+
+            //    throttleType: 'debounce',
+
+            //    throttleDelay: 300,
+
+            //    geoIndex: 0
+
+            // },
+
+            geo: {
+
+                map: 'china',
+
+                left: '10',
+
+                right: '35%',
+
+                center: [117.98561551896913, 31.205000490896193],
+
+                zoom: 2.5,
+
+                label: {
+
+                    emphasis: {
+
+                        show: false
+
+                    }
+
+                },
+
+                roam: true,
+
+                itemStyle: {
+
+                    normal: {
+
+                        areaColor: '#017054',
+                          //两种深黑灰
+
+                        borderColor: '#48dcad'
+
+                    },
+
+                    emphasis: {
+
+                        areaColor: '#1b654f'  //深黑灰
+
+                    }
+
+                }
+
+            },
+
+            tooltip: {   //悬浮提示信息
+
+                trigger: 'item'
+
+            },
+
+            // grid: {    //统计表
+
+            //    right: 40,
+
+            //    top: 100,
+
+            //    bottom: 40,
+
+            //    width: '30%'
+
+            // },
+
+            // xAxis: {
+
+            //    type: 'value',
+
+            //    scale: true,
+
+            //    position: 'top',
+
+            //    boundaryGap: false,
+
+            //    splitLine: {show: false},
+
+            //    axisLine: {show: false},
+
+            //    axisTick: {show: false},
+
+            //    axisLabel: {margin: 2, textStyle: {color: '#aaa'}},  //背景灰
+
+            // },
+
+            // yAxis: {
+
+            //    type: 'category',
+
+            //    name: 'TOP 20',
+
+            //    nameGap: 16,
+
+            //    axisLine: {show: false, lineStyle: {color: '#ddd'}},
+
+            //    axisTick: {show: false, lineStyle: {color: '#ddd'}},
+
+            //    axisLabel: {interval: 0, textStyle: {color: '#ddd'}},
+
+            //    data: []
+
+            // },
+
+            series: [
+
+                {
+
+                    name: '站点',
+
+                    type: 'scatter',
+                       //散点图
+
+                    coordinateSystem: 'geo',
+                      //地理坐标系
+
+                    data: convertedData[0],
+
+                    symbolSize: function(val) {   //标记的大小,大小不一样会用如下公式计算
+
+                        return Math.max(val[2] / 10, 8);
+
+                    },
+
+                    label: {  //图形上的文本标签
+
+                        normal: {
+
+                            formatter: '{b}',
+
+                            position: 'right',
+
+                            show: false  //站点地名的直接显示
+
+                        },
+
+                        emphasis: {
+
+                            show: true  //悬浮显示
+
+                        }
+
+                    },
+
+                    itemStyle: {
+
+                        normal: {
+
+                            color: '#ddb926'  //屎黄
+
+                        }
+
+                    },
+
+                },
+
+                {
+
+                    name: '中心',
+
+                    type: 'effectScatter',
+                       //带有涟漪的散点图
+
+                    coordinateSystem: 'geo',
+
+                    data: convertedData[1],
+
+                    symbolSize: function(val) {
+
+                        return Math.max(val[2] / 10, 8);
+
+                    },
+
+                    showEffectOn: 'emphasis',
+                      //配置何时显示特效:高亮（hover）的时候显示特效。
+
+                    rippleEffect: {
+
+                        brushType: 'stroke'   //波纹的绘制方式:空心或者实心fill
+
+                    },
+
+                    hoverAnimation: true,
+
+                    label: {
+
+                        normal: {
+
+                            formatter: '{b}',
+                              //模板变量有 {a}、{b}、{c}，分别表示系列名，数据名，数据值。
+
+                            position: 'right',
+
+                            show: true
+
+                        }
+
+                    },
+
+                    itemStyle: {
+
+                        normal: {
+
+                            color: '#f4e925',
+                              //亮黄
+
+                            shadowBlur: 10,
+
+                            shadowColor: '#333'   //悬浮灰
+
+                        }
+
+                    },
+
+                    zlevel: 1
+
+                }
+
+            ]
+
+        };
+
+        myChart.on('brushselected', renderBrushed);
+
+        // myChart.setOption(option); 这里本来就是注释的
+
+        // setTimeout(function () {
+
+        //    myChart.dispatchAction({    //属于API里面action.brush，选择区域进行统计
+
+        //        type: 'brush',
+
+        //        areas: [
+
+        //            {
+
+        //                geoIndex: 0,    //index 为 0 的 geo 坐标系
+
+        //                brushType: 'polygon',  //指定选框的类型,下面的是选框范围
+
+        //                coordRange: [[119.72,34.85],[119.68,34.85],[119.5,34.84],[119.19,34.77],[118.76,34.63],[118.6,34.6],[118.46,34.6],[118.33,34.57],[118.05,34.56],[117.6,34.56],[117.41,34.56],[117.25,34.56],[117.11,34.56],[117.02,34.56],[117,34.56],[116.94,34.56],[116.94,34.55],[116.9,34.5],[121.64,34.08]]
+
+        //            }
+
+        //        ]
+
+        //    });
+
+        // }, 0);
+
+        function renderBrushed(params) {
+
+            var mainSeries = params.batch[0].selected[0];
+
+            var selectedItems = [];
+
+            var categoryData = [];
+
+            var barData = [];
+
+            var maxBar = 30;
+
+            var sum = 0;
+
+            var count = 0;
+
+            for (var i = 0; i < mainSeries.dataIndex.length; i++) {
+
+                var rawIndex = mainSeries.dataIndex[i];
+
+                var dataItem = convertedData[0][rawIndex];
+
+                var pmValue = dataItem.value[2];
+
+                sum += pmValue;
+
+                count++;
+
+                selectedItems.push(dataItem);
+
+            }
+
+            selectedItems.sort(function(a, b) {
+
+                return a.value[2] - b.value[2];
+
+            });
+
+            for (var i = 0; i < Math.min(selectedItems.length, maxBar); i++) {
+
+                categoryData.push(selectedItems[i].name);
+
+                barData.push(selectedItems[i].value[2]);
+
+            }
+
+            this.setOption({
+
+                yAxis: {
+
+                    data: categoryData
+
+                },
+
+                xAxis: {
+
+                    axisLabel: {
+                        show: !!count
+                    }
+
+                },
+
+                title: {
+
+                    id: 'statistic',
+
+                    text: count ? '平均: ' + (sum / count).toFixed(4) : ''
+
+                },
+
+                series: {
+
+                    id: 'bar',
+
+                    data: barData
+
+                }
+
+            });
+        }
+
+        // 引入注意事项：
+
+        // 显示地图首先要引入china.js， 然后调用
+
+        var mapChart = echarts.init(document.getElementById('map_chart'));
+
+        mapChart.setOption({
+
+            series: [{
+
+                 
+                type: 'map',
+
+                 map: 'china'
+
+            }]
+
+        });
+
+
+        mapChart.setOption(option)
+    </script>
+</body>
+
+</html>
